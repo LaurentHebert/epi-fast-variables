@@ -54,18 +54,18 @@ def beff_sis(i, tau, n=N, gam=GAM):
 
 
 def beff_ho(i, tau, beta, n=N, gam=GAM, nT=NT):
-    """Simplicial SIS, Eq. (45).  p(i) is an implicit root of the quartic."""
+    """Simplicial SIS:  p(i) is an implicit root of the quartic."""
     p = np.array([ho_p(x, tau, n, gam, beta, nT) for x in np.atleast_1d(i)])
     return ho_beff(np.atleast_1d(i), p, tau, n, gam, beta, nT)
 
 
 def beff_ad(i, tau, w, n=N, gam=GAM):
-    """Adaptive network SIS, Eq. (86):  beta_eff = tau n p1(i)."""
+    """Adaptive network SIS:  beta_eff = tau n p1(i)."""
     return tau * n * ad_p1(i, tau, n, gam, w)
 
 
 def beff_ic(i, tau, alpha, gam=GAM):
-    """Interacting contagions, Eq. (100).
+    """Interacting contagions,:
 
     NOTE the explicit susceptible factor (1 - i): in the well-mixed setting it
     is part of beta_eff itself.  `ic_beff` in fast_variable_figure.py returns
@@ -95,14 +95,14 @@ def catalogue(gam=GAM, n=N, nT=NT):
     cur.append(dict(lab="Pairwise (always continuous)", col=C_SIS, fwd=True,
                     tauc=tc, f=lambda i, tc=tc: beff_sis(i, tc)))
 
-    for beta, fwd in ((0.4, True), (1.6, False)):
+    for beta, fwd in ((0.4, True), (1.3, False)):
         tc = ho_tauc(beta, n, gam, nT)
         rel = r"<\beta^*" if fwd else r">\beta^*"
-        cur.append(dict(lab=rf"Simplicial  $\beta={beta}{rel}$", col=C_HO,
+        cur.append(dict(lab=rf"Higher-order  $\beta={beta}{rel}$", col=C_HO,
                         fwd=fwd, tauc=tc,
                         f=lambda i, tc=tc, b=beta: beff_ho(i, tc, b)))
 
-    for w, fwd in ((0.5, True), (3.0, False)):
+    for w, fwd in ((0.8, True), (3.0, False)):
         tc = ad_tauc(n, gam, w)
         rel = r"<w^*" if fwd else r">w^*"
         cur.append(dict(lab=rf"Adaptive  $w={w}{rel}$", col=C_AD, fwd=fwd,

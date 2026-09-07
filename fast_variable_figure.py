@@ -253,7 +253,7 @@ def make_figure(outfile="fig_fast_variable"):
     for k, nn in enumerate([4, 6, 10]):
         up = sweep(sis_full, lambda t: [1e-5, 1e-5], taus,
                    lambda t: (t, nn, gam), lambda y: y[0], cont=False)
-        a.plot(taus, up, "o", ms=2.2, color=C_SET[k], alpha=.7, label=f"$n={nn}$")
+        a.plot(taus, up, "o", ms=3.0, mfc="none", color=C_SET[k], alpha=.7, label=f"$n={nn}$")
         a.plot(endemic_branch(lambda i, t: t * nn * sis_p(i, t, nn, gam) - gam, ig),
                ig, "--", color=C_SET[k], lw=1.1)
     a.set_xlim(0, .6); a.set_ylim(-.02, 1.1)
@@ -275,14 +275,14 @@ def make_figure(outfile="fig_fast_variable"):
     a = ax[1, 2]
     taus = np.linspace(0.02, 0.42, 110)
     ig = np.linspace(1e-4, 0.93, 350)
-    for k, b in enumerate([0.4, BSTAR, 1.6]):
+    for k, b in enumerate([0.4, BSTAR, 1.3]):
         up = sweep(ho_full, lambda t: [1e-6, 0.9], taus,
                    lambda t: (t, n, gam, b, nT), lambda y: y[0])
         dn = sweep(ho_full, lambda t: [0.55, 0.35], taus,
                    lambda t: (t, n, gam, b, nT), lambda y: y[0], up=False)
         lab = rf"$\beta={b:.2f}$" + (r"  $(\beta^*)$" if abs(b - BSTAR) < 1e-3 else "")
-        a.plot(taus, up, "o", ms=2.0, color=C_SET[k], alpha=.7, label=lab)
-        a.plot(taus, dn, "o", ms=2.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
+        a.plot(taus, up, "o", ms=3.0, mfc="none", color=C_SET[k], alpha=.7, label=lab)
+        a.plot(taus, dn, "o", ms=3.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
         a.plot(endemic_branch(
             lambda i, t: ho_beff(i, ho_p(i, t, n, gam, b, nT), t, n, gam, b, nT) - gam,
             ig, hi=3.0), ig, "--", color=C_SET[k], lw=1.1)
@@ -291,7 +291,7 @@ def make_figure(outfile="fig_fast_variable"):
     a.set_title(r"discontinuous for $\beta > \beta^* \approx 0.82$", loc="right", fontsize=10)
 
     # ---------------- row 2: adaptive network SIS -------------------- #
-    n, w = 5, 0.5
+    n, w = 5, 0.8
     tau, T = 1.3 * ad_tauc(n, gam, w), 70
     F = solve_ivp(ad_full, [0, T], [i0, 1 - i0, i0], args=(tau, n, gam, w), **IVP)
     R = solve_ivp(ad_1d,   [0, T], [i0],             args=(tau, n, gam, w), **IVP)
@@ -303,9 +303,9 @@ def make_figure(outfile="fig_fast_variable"):
     p1r = ad_p1(ir, tau, n, gam, w)
     ax[2, 1].plot(tt, F.sol(tt)[1], color=C_FULL)                       # p1 full
     ax[2, 1].plot(tt, p1r, "--", color=C_1D)                            # p1 slaved
-    ax[2, 1].plot(tt, F.sol(tt)[2], color=C_FULL, lw=.8, alpha=.55)     # p2 full
+    ax[2, 1].plot(tt, F.sol(tt)[2], color=C_FULL, lw=.8, alpha=.75)     # p2 full
     ax[2, 1].plot(tt, ad_p2(ir, p1r, tau, n, gam, w), "--", color=C_1D,
-                  lw=.8, alpha=.55)                                     # p2 slaved
+                  lw=.8, alpha=.75)                                     # p2 slaved
     ax[2, 1].annotate(r"$p_1$", (.35, .55), xycoords="axes fraction", fontsize=10)
     ax[2, 1].annotate(r"$p_2$", (.35, .3), xycoords="axes fraction", fontsize=10, alpha=.7)
 
@@ -318,8 +318,8 @@ def make_figure(outfile="fig_fast_variable"):
         dn = sweep(ad_full, lambda t: [0.5, 0.4, 0.5], taus,
                    lambda t: (t, n, gam, ww), lambda y: y[0], up=False)
         lab = rf"$w={ww}$" + (r"  $(w^*)$" if abs(ww - ad_wstar(n, gam)) < 1e-9 else "")
-        a.plot(taus, up, "o", ms=2.0, color=C_SET[k], alpha=.7, label=lab)
-        a.plot(taus, dn, "o", ms=2.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
+        a.plot(taus, up, "o", ms=3.0, mfc="none", color=C_SET[k], alpha=.7, label=lab)
+        a.plot(taus, dn, "o", ms=3.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
         a.plot(ad_branch(ig, n, gam, ww), ig, "--", color=C_SET[k], lw=1.1)
     a.set_xlim(.08, .95); a.set_ylim(-.02, 1.1)
     a.legend(frameon=False, loc="upper left")
@@ -347,8 +347,8 @@ def make_figure(outfile="fig_fast_variable"):
         dn = sweep(ic_full, lambda t: [0.4, 0.4], taus,
                    lambda t: (t, al, gam), lambda y: y[0] + y[1], up=False)
         lab = rf"$\alpha={al}$" + (r"  $(\alpha^*)$" if al == 2.0 else "")
-        a.plot(taus, up, "o", ms=2.0, color=C_SET[k], alpha=.7, label=lab)
-        a.plot(taus, dn, "o", ms=2.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
+        a.plot(taus, up, "o", ms=3.0, mfc="none", color=C_SET[k], alpha=.7, label=lab)
+        a.plot(taus, dn, "o", ms=3.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
         a.plot(endemic_branch(lambda i, t: ic_beff(i, t, al, gam) * (1 - i) - gam,
                               ig, lo=.05), ig, "--", color=C_SET[k], lw=1.1)
     a.set_xlim(.55, 1.45); a.set_ylim(-.02, 1.1)
@@ -359,7 +359,7 @@ def make_figure(outfile="fig_fast_variable"):
     rows = ["Pairwise SIS", "Higher-order (simplicial)",
             "Adaptive network SIS", "Interacting contagions"]
     pars = [r"$n=5$", r"$n=5,\ n_\Delta=3,\ \beta=0.4$",
-            r"$n=5,\ w=0.5$", r"$\alpha=1.5$"]
+            r"$n=5,\ w=0.5$", r"$\gamma_2 = \gamma = 1,\ \alpha=1.5$"]
     for r in range(4):
         ax[r, 0].set_ylabel("prevalence  $i$")
         ax[r, 1].set_ylabel("fast variable")

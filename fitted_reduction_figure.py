@@ -146,7 +146,7 @@ def main():
                         [ho_p(x, tau, n, gam, beta, nT) for x in np.atleast_1d(i)]),
                     tlab=r"quasi-static $p^*(i)$", extra=None))
 
-    w = 0.5
+    w = 0.8
     tau = 1.3 * ad_tauc(n, gam, w)
     cfg.append(dict(key="ad", title="Adaptive network SIS",
                     pars=rf"$n={n},\ w={w}$",
