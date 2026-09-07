@@ -161,7 +161,7 @@ def make_figure(outfile="fig_beff_skeleton", show_invariant=False):
     ax.set_xlim(0, IMAX)
     ax.set_ylim(0.79, 1.21)
     ax.tick_params(top=True, right=True, length=3)
-    ax.text(0.28, 1.02, r"$\gamma=1$,  $n=5$,  $n_\Delta=3$;  each model at $\tau=\tau_c$",
+    ax.text(0.22, 1.02, r"$\gamma=\gamma_2=1$,  $n=5$,  $n_\Delta=3$;  each model at $\tau=\tau_c$",
             transform=ax.transAxes, fontsize=10, color="0.35")
 
     ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5),
@@ -174,7 +174,7 @@ def make_figure(outfile="fig_beff_skeleton", show_invariant=False):
 
 
 # ===================================================================== #
-#  Numerical audit
+#  Numerical audit (optional; run with --check; based on Claude Code)
 # ===================================================================== #
 def checks():
     """Two things must hold for every curve: it passes through (0, 1) to
