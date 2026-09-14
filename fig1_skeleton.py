@@ -36,7 +36,7 @@ from fast_variable_figure import (
     sis_p, sis_tauc,
     ho_p, ho_beff, ho_tauc,
     ad_p1, ad_tauc, ad_wstar,
-    ic_p, ic_tauc,
+    ic_p, ic_beff, ic_tauc,
 )
 
 GAM = 1.0
@@ -65,16 +65,15 @@ def beff_ad(i, tau, w, n=N, gam=GAM):
 
 
 def beff_ic(i, tau, alpha, gam=GAM):
-    """Interacting contagions,:
+    """Interacting contagions:  beta_eff = tau[alpha - (alpha-1)p(i)](1 - i).
 
-    NOTE the explicit susceptible factor (1 - i): in the well-mixed setting it
-    is part of beta_eff itself.  `ic_beff` in fast_variable_figure.py returns
-    only tau[alpha - (alpha-1)p] and leaves the (1 - i) to the prevalence
-    equation, so it is NOT the quantity plotted here.  Dropping the factor
-    flips the sign of the slope at i = 0 -- it would draw alpha = 1.5 as a
-    backward case, contradicting alpha* = 2.
+    The susceptible factor (1 - i) is part of beta_eff itself in the well-mixed
+    setting, and `ic_beff` in fast_variable_figure.py now carries it, so this is
+    the same quantity the reduced model and the endemic branch use.  Dropping it
+    would flip the sign of the slope at i = 0 and draw alpha = 1.5 as a backward
+    case, contradicting alpha* = 2.
     """
-    return tau * (alpha - (alpha - 1) * ic_p(i, tau, alpha, gam)) * (1 - i)
+    return ic_beff(i, ic_p(i, tau, alpha, gam), tau, alpha)
 
 
 def beff_ic_invariant(i, tau, alpha, gam=GAM):

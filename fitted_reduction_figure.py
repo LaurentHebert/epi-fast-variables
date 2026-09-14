@@ -31,7 +31,7 @@ from fast_variable_figure import (
     sis_full, sis_p, sis_tauc,
     ho_full, ho_p, ho_beff, ho_tauc,
     ad_full, ad_p1, ad_tauc,
-    ic_full, ic_p, ic_tauc,
+    ic_full, ic_p, ic_beff, ic_tauc,
 )
 
 GAM = 1.0
@@ -89,7 +89,9 @@ def make_1d(key, coef, args):
         return guard(lambda i: i * (ho_beff(i, pf(i), tau, n, gam, beta, nT) - gam))
     if key == "ic":
         tau, alpha, gam = args
-        return guard(lambda i: i * (tau * (alpha - (alpha - 1) * pf(i)) * (1 - i) - gam))
+        # ic_beff carries the susceptible factor (1 - i), so the fitted p(i)
+        # goes through exactly the same beta_eff as the analytic reduction.
+        return guard(lambda i: i * (ic_beff(i, pf(i), tau, alpha) - gam))
     raise ValueError(key)
 
 

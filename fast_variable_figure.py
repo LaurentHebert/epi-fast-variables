@@ -174,13 +174,26 @@ def ic_p(i, tau, alpha, gam):
     return (-B - np.sqrt(np.maximum(B * B - 4 * A * C, 0.0))) / (2 * A)
 
 
-def ic_beff(i, tau, alpha, gam):
-    return tau * (alpha - (alpha - 1) * ic_p(i, tau, alpha, gam))
+def ic_beff(i, p, tau, alpha):
+    """Effective force of infection, Eq. (99):  beta_eff = tau[alpha-(alpha-1)p](1-i).
+
+    The susceptible factor (1 - i) belongs to beta_eff itself, exactly as in the
+    manuscript, so the prevalence equation is di/dt = i[beta_eff - gamma_eff]
+    with no extra factor outside.  Keeping the factor here is what makes the
+    slope of beta_eff at i = 0 equal gamma(alpha - 2) and change sign at
+    alpha* = 2; dropping it would leave a slope gamma(alpha - 1) > 0 that
+    misclassifies every alpha > 1 as backward.
+
+    Signature mirrors ho_beff: p is supplied by the caller, so the quasi-static
+    root ic_p(i, ...) and a p(i) fitted from a trajectory both go through this
+    one definition.
+    """
+    return tau * (alpha - (alpha - 1) * p) * (1 - i)
 
 
 def ic_1d(t, y, tau, alpha, gam):
     i = np.clip(y[0], 1e-14, 1 - 1e-9)
-    return [i * (ic_beff(i, tau, alpha, gam) * (1 - i) - gam)]
+    return [i * (ic_beff(i, ic_p(i, tau, alpha, gam), tau, alpha) - gam)]
 
 
 def ic_tauc(gam):
@@ -349,8 +362,9 @@ def make_figure(outfile="fig_fast_variable"):
         lab = rf"$\alpha={al}$" + (r"  $(\alpha^*)$" if al == 2.0 else "")
         a.plot(taus, up, "o", ms=3.0, mfc="none", color=C_SET[k], alpha=.7, label=lab)
         a.plot(taus, dn, "o", ms=3.0, mfc="none", mew=.55, color=C_SET[k], alpha=.7)
-        a.plot(endemic_branch(lambda i, t: ic_beff(i, t, al, gam) * (1 - i) - gam,
-                              ig, lo=.05), ig, "--", color=C_SET[k], lw=1.1)
+        a.plot(endemic_branch(
+            lambda i, t: ic_beff(i, ic_p(i, t, al, gam), t, al) - gam,
+            ig, lo=.05), ig, "--", color=C_SET[k], lw=1.1)
     a.set_xlim(.55, 1.45); a.set_ylim(-.02, 1.1)
     a.legend(frameon=False, loc="upper left")
     a.set_title(r"discontinuous for $\alpha>\alpha^* = 2$", loc="right", fontsize=10)
