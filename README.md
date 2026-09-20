@@ -16,7 +16,7 @@ Then each figure builds itself:
 uv run figure1.py     # figure1.pdf, figure1.png -- beta_eff at threshold
 uv run figure2.py     # figure2.pdf, figure2.png -- 4x3 reduction of four models
 uv run figure3.py     # figure3.pdf, figure3.png -- reduction fitted from trajectories
-uv run figure4.py     # figure4.pdf             -- pairwise SIR, 2D reduction
+uv run figure4.py     # figure4.pdf, figure4.png -- pairwise SIR, 2D reduction
 ```
 
 A successful run prints nothing. Diagnostics are available behind flags:
