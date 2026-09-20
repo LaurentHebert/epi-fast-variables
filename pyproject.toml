@@ -1,0 +1,52 @@
+[project]
+name = "fast-variable-figures"
+version = "0.1.0"
+description = "Figures for 'Fast-variable reduction to complex contagion unifies epidemic models'"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+]
+
+# No [build-system]: this is a set of scripts, not a package.  `uv sync` installs the
+# dependencies into .venv and nothing else.
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = [".venv", "_original", "golden"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # import sorting
+    "UP",  # modern-Python rewrites
+    "B",   # bugbear (catches the late-binding-closure family of bugs)
+    "N",   # pep8-naming
+    "NPY", # numpy-specific
+    "RUF", # ruff's own
+    "D",   # docstrings
+]
+ignore = [
+    # The code deliberately mirrors the manuscript's notation: A, B, C for the
+    # coefficients of a quadratic, SI and SS for pair counts, T for a horizon, C for
+    # the SIR invariant.  Renaming them to satisfy pep8-naming would break the
+    # correspondence with the equations that the comments cite.
+    "N803", # argument name should be lowercase
+    "N806", # variable in function should be lowercase
+    # Docstrings here are one-liners by house style; parameters are documented once,
+    # on the dataclass that carries them, not repeated per function.
+    "D417", # missing argument descriptions
+    # Docstrings name the quantity a function returns ("Effective force of
+    # infection ...") rather than ordering the reader about; that reads better
+    # against equations than "Compute the effective force of infection".
+    "D401", # first line should be in imperative mood
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.isort]
+known-first-party = ["models", "style"]
