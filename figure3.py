@@ -46,6 +46,10 @@ from models import (
     ModelParams,
     PairwiseSIS,
     Simplicial,
+    ad_rhs_1d,
+    ic_rhs_1d,
+    sim_rhs_1d,
+    sis_rhs_1d,
     ad_beta_eff,
     ad_fast,
     ad_rhs,
@@ -113,6 +117,7 @@ class Panel:
     p_of: Callable[[NDArray[np.float64]], NDArray[np.float64]]
     quasi_static: Callable[[NDArray[np.float64]], NDArray[np.float64]]
     beta_eff: Callable[[float, float], float]
+    rhs_1d: Callable[..., list[float]] | None = None
     fast_label: str = r"quasi-static $p^*(i)$"
 
     @property
@@ -126,13 +131,13 @@ def build_panels(gam: float = GAM) -> list[Panel]:
     sis = PairwiseSIS(n=N, gamma=gam)
     tau_sis = 1.3 * sis_tau_c(sis)
 
-    sim = Simplicial(n=N, n_tri=3, beta=0.4, gamma=gam)
+    sim = Simplicial(n=N, n_tri=3, beta=1.3, gamma=gam)
     tau_sim = 1.3 * sim_tau_c(sim)
 
-    ad = Adaptive(n=N, w=0.8, gamma=gam)
+    ad = Adaptive(n=N, w=3.0, gamma=gam)
     tau_ad = 1.3 * ad_tau_c(ad)
 
-    ic = Interacting(alpha=1.5, gamma=gam)
+    ic = Interacting(alpha=3.0, gamma=gam)
     tau_ic = 1.3 * ic_tau_c(ic)
 
     return [
@@ -140,6 +145,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
             title="Pairwise SIS",
             params_label=rf"$n={N}$",
             rhs=sis_rhs,
+            rhs_1d=sis_rhs_1d,
             y0=[I0, (1 - I0) * I0],
             par=sis,
             tau=tau_sis,
@@ -153,6 +159,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
             title="Higher-order (simplicial)",
             params_label=rf"$n={N},\ n_\Delta={sim.n_tri},\ \beta={sim.beta}$",
             rhs=sim_rhs,
+            rhs_1d=sim_rhs_1d,
             y0=[I0, 1 - I0],
             par=sim,
             tau=tau_sim,
@@ -166,6 +173,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
             title="Adaptive network SIS",
             params_label=rf"$n={N},\ w={ad.w}$",
             rhs=ad_rhs,
+            rhs_1d=ad_rhs_1d,
             y0=[I0, 1 - I0, I0],
             par=ad,
             tau=tau_ad,
@@ -180,6 +188,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
             title="Interacting contagions",
             params_label=rf"$\alpha={ic.alpha}$",
             rhs=ic_rhs,
+            rhs_1d=ic_rhs_1d,
             y0=[I0, 0.0],
             par=ic,
             tau=tau_ic,
@@ -333,14 +342,20 @@ def draw_panel(ax: plt.Axes, panel: Panel) -> tuple[tuple[float, float], dict]:
         borderpad=0.2,
         labelspacing=0.3,
     )
-    ax.set_xlim(0, igrid[-1] * 1.03)
+    ax.set_xlim(0, igrid[-1] * 1.1)
     style.frame_axes(ax)
 
     axi = ax.inset_axes([0.615, 0.55, 0.355, 0.40])
-    icap = min(0.95, 1.45 * igrid[-1])  # just above the top of the inset
+    itop = 1.35 * igrid[-1]   # top of the inset (same value as in set_ylim)
+    icap = 1.05 * itop        # stop just past the frame
     full = solve_ivp(panel.rhs, [0, panel.T], panel.y0, args=panel.args, **IVP)
     tt = np.linspace(0, panel.T, 900)
-    axi.plot(tt, panel.i_of(full.sol(tt)), color="k", lw=1.15, alpha=0.85, zorder=5)
+    tm = np.linspace(0, panel.T, 30)
+    axi.plot(tm, panel.i_of(full.sol(tm)), "o", ms=3.0, mfc="none", mew=0.6,
+             color="0.4", zorder=5)
+    qs = solve_ivp(panel.rhs_1d, [0, panel.T], [I0], args=panel.args, t_eval=tt,
+                   rtol=1e-9, atol=1e-12)
+    axi.plot(qs.t, qs.y[0], "-", color="k", lw=0.9, zorder=6)
     for d in DRAWN_ORDERS:
         red = solve_ivp(
             reduced_rhs(panel, fits[d]),
@@ -352,9 +367,13 @@ def draw_panel(ax: plt.Axes, panel: Panel) -> tuple[tuple[float, float], dict]:
             method="LSODA",
             events=cap_event(icap),
         )
+        t_red, i_red = red.t, red.y[0]
+        if red.t_events[0].size:  # cap reached: add the exact crossing point
+            t_red = np.append(t_red, red.t_events[0][0])
+            i_red = np.append(i_red, red.y_events[0][0, 0])
         axi.plot(
-            red.t,
-            red.y[0],
+            t_red,
+            i_red,
             FIT_LINESTYLE[d],
             lw=FIT_WIDTH_INSET[d],
             color=FIT_COLOUR[d],
@@ -364,6 +383,10 @@ def draw_panel(ax: plt.Axes, panel: Panel) -> tuple[tuple[float, float], dict]:
     axi.set_xlabel("time", fontsize=10, labelpad=1)
     axi.set_ylabel("prevalence $i$", fontsize=10, labelpad=1)
     axi.tick_params(labelsize=10, length=2)
+    current_yticks = axi.get_yticks()
+    axi.set_yticks([y for y in current_yticks if y != 0])
+    bottom, top = axi.get_ylim()
+    axi.set_ylim([-0.05,top])
 
     return transient, {"igrid": igrid, "pgrid": pgrid, "fits": fits}
 
