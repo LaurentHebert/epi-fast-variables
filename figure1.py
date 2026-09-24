@@ -286,8 +286,8 @@ def make_figure(outfile: str = OUTFILE, show_invariant: bool = False) -> None:
     )
 
     fig.tight_layout()
-    fig.savefig(outfile + ".pdf", bbox_inches="tight")
-    fig.savefig(outfile + ".png", dpi=200, bbox_inches="tight")
+    fig.savefig('./figures/' + outfile + ".pdf", bbox_inches="tight")
+    fig.savefig('./figures/' + outfile + ".png", dpi=200, bbox_inches="tight")
 
 
 # --------------------------------------------------------------------------- #

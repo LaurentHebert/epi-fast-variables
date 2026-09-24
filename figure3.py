@@ -394,8 +394,8 @@ def make_figure(outfile: str = OUTFILE, verbose: bool = False) -> None:
             report_fit_quality(panel, transient, data)
 
     fig.tight_layout()
-    fig.savefig(outfile + ".pdf")
-    fig.savefig(outfile + ".png", dpi=200)
+    fig.savefig('./figures/' + outfile + ".pdf")
+    fig.savefig('./figures/' + outfile + ".png", dpi=200)
 
 
 if __name__ == "__main__":

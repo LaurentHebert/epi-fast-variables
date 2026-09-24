@@ -408,8 +408,8 @@ def make_figure(outfile: str = OUTFILE) -> None:
     ax[0, 1].set_title("(b) fast variable relaxation", loc="right", fontsize=10)
 
     fig.tight_layout(h_pad=1.6)
-    fig.savefig(outfile + ".pdf")
-    fig.savefig(outfile + ".png", dpi=200)
+    fig.savefig('./figures/' + outfile + ".pdf")
+    fig.savefig('./figures/' + outfile + ".png", dpi=200)
 
 
 # --------------------------------------------------------------------------- #
