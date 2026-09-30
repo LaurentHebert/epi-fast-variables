@@ -4,7 +4,7 @@ Four figure scripts based on the model equations. Project by L. Hébert-Dufresne
 
 ## Running
 
-The project is managed with [uv](https://docs.astral.sh/uv/). One-time setup:
+The project's dependencies are managed with [uv](https://docs.astral.sh/uv/). One-time setup:
 
 ```sh
 uv sync
@@ -19,7 +19,7 @@ uv run figure3.py     # figure3.pdf, figure3.png -- reduction fitted from trajec
 uv run figure4.py     # figure4.pdf, figure4.png -- pairwise SIR, 2D reduction
 ```
 
-Alternatively, run with your own enviroment with
+Alternatively, run with your own environment simply with
 ```sh
 python figureX.py
 ```
