@@ -89,7 +89,7 @@ IVP = dict(rtol=1e-11, atol=1e-14, method="LSODA", dense_output=True)
 # of the palette is deliberately skipped, so that adjacent orders stay
 # distinguishable where they nearly coincide.
 FIT_ORDERS = (0, 1, 2, 3)
-DRAWN_ORDERS = (0, 1, 2)
+DRAWN_ORDERS = (1, 2)
 FIT_LABELS = ("constant", "linear", "quadratic", "cubic")
 FIT_LINESTYLE = {0: ":", 1: "-.", 2: "--"}
 FIT_WIDTH_MAIN = {0: 1.15, 1: 2.0, 2: 1.15}
@@ -143,7 +143,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
     return [
         Panel(
             title="Pairwise SIS",
-            params_label=rf"$n={N}$",
+            params_label=rf"$\tau={tau_sis},\ n={N}$",
             rhs=sis_rhs,
             rhs_1d=sis_rhs_1d,
             y0=[I0, (1 - I0) * I0],
@@ -156,8 +156,8 @@ def build_panels(gam: float = GAM) -> list[Panel]:
             beta_eff=lambda i, p: sis_beta_eff(i, p, tau_sis, sis),
         ),
         Panel(
-            title="Higher-order (simplicial)",
-            params_label=rf"$n={N},\ n_\Delta={sim.n_tri},\ \beta={sim.beta}$",
+            title="Higher-order",
+            params_label=rf"$\tau={tau_sim:.2f},\ n={N},\ n_\Delta={sim.n_tri},\ \beta={sim.beta}$",
             rhs=sim_rhs,
             rhs_1d=sim_rhs_1d,
             y0=[I0, 1 - I0],
@@ -171,7 +171,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
         ),
         Panel(
             title="Adaptive network SIS",
-            params_label=rf"$n={N},\ w={ad.w}$",
+            params_label=rf"$\tau={tau_ad},\ n={N},\ w={ad.w}$",
             rhs=ad_rhs,
             rhs_1d=ad_rhs_1d,
             y0=[I0, 1 - I0, I0],
@@ -186,7 +186,7 @@ def build_panels(gam: float = GAM) -> list[Panel]:
         ),
         Panel(
             title="Interacting contagions",
-            params_label=rf"$\alpha={ic.alpha}$",
+            params_label=rf"$\tau={tau_ic},\ \alpha={ic.alpha}$",
             rhs=ic_rhs,
             rhs_1d=ic_rhs_1d,
             y0=[I0, 0.0],
