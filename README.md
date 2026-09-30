@@ -19,6 +19,11 @@ uv run figure3.py     # figure3.pdf, figure3.png -- reduction fitted from trajec
 uv run figure4.py     # figure4.pdf, figure4.png -- pairwise SIR, 2D reduction
 ```
 
+Alternatively, run with your own enviroment with
+```sh
+python figureX.py
+```
+
 A successful run prints nothing. Diagnostics are available behind flags:
 
 | flag | script | what it prints |
