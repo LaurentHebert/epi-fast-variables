@@ -17,6 +17,7 @@ uv run figure1.py     # figure1.pdf, figure1.png -- beta_eff at threshold
 uv run figure2.py     # figure2.pdf, figure2.png -- 4x3 reduction of four models
 uv run figure3.py     # figure3.pdf, figure3.png -- reduction fitted from trajectories
 uv run figure4.py     # figure4.pdf, figure4.png -- pairwise SIR, 2D reduction
+uv run figure5.py     # figure5.pdf, figure5.png -- reduction fitten from simulations
 ```
 
 Alternatively, run with your own environment simply with
@@ -44,7 +45,7 @@ unless numpy, scipy and matplotlib happen to be installed there.
 models.py     all five models: full RHS, quasi-static fast variable, beta_eff,
               thresholds, critical parameters.  No matplotlib.
 style.py      shared rcParams and the colour palette, by role.
-figure1..4.py one figure each: layout, and the data pipeline that figure needs.
+figure1..5.py one figure each: layout, and the data pipeline that figure needs.
 ```
 
 `models.py` groups each model's constants in a frozen dataclass — `PairwiseSIS`,

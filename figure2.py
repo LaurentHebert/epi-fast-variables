@@ -5,7 +5,8 @@ Rows   : pairwise SIS | higher-order (simplicial) | adaptive network SIS |
 Columns: (a) prevalence i(t), full model vs the 1D reduction
          (b) fast-variable relaxation p(t), full model vs the quasi-static p*(i)
          (c) bifurcation diagram in tau: full-model up-sweep (filled) and
-             down-sweep (open) against the analytic endemic branch (dashed)
+             down-sweep (open) against the analytic endemic branch shown
+             in solid lines when stable and dashed lines when unstable
 
 Column (c) is what makes the transition type visible: where up- and down-sweeps
 separate, the model is bistable.  Each row sweeps a third parameter across the
@@ -161,6 +162,27 @@ def _plot_sweeps(
         ax.plot(taus, down, "o", ms=3.0, mfc="none", mew=0.55, color=colour, alpha=0.7)
 
 
+def _plot_branch(
+    ax: plt.Axes,
+    tau_br: NDArray[np.float64],
+    igrid: NDArray[np.float64],
+    colour: str,
+) -> None:
+    """Endemic branch tau(i*): solid where stable (dtau/di > 0), dashed where unstable.
+
+    In the 1D reduction di/dt = i (beta_eff - gamma), and beta_eff increases with tau,
+    so an endemic equilibrium is stable exactly where tau(i*) increases with i*.
+    """
+    ok = np.isfinite(tau_br)
+    t, i = tau_br[ok], igrid[ok]
+    stable = np.gradient(t, i) > 0
+    edges = np.flatnonzero(np.diff(stable.astype(int))) + 1
+    for seg in np.split(np.arange(len(t)), edges):
+        # Extend by one point so neighbouring segments join without a gap.
+        s = np.arange(seg[0], min(seg[-1] + 2, len(t)))
+        ax.plot(t[s], i[s], "-" if stable[seg[0]] else "--", color=colour, lw=1.1)
+
+
 # --------------------------------------------------------------------------- #
 #  Rows
 # --------------------------------------------------------------------------- #
@@ -191,14 +213,13 @@ def row_pairwise_sis(ax: NDArray, gam: float, i0: float) -> None:
         # No continuation: each tau is seeded fresh, the branch being single-valued.
         up = sweep(sis_rhs, [1e-5, 1e-5], taus, p, lambda y: y[0], cont=False)
         _plot_sweeps(a, taus, up, None, colour, f"$n={n}$")
-        a.plot(
+        _plot_branch(
+            a,
             endemic_branch(
                 lambda i, t, p=p: sis_beta_eff(i, sis_fast(i, t, p), t, p) - gam, ig
             ),
             ig,
-            "--",
-            color=colour,
-            lw=1.1,
+            colour,
         )
     a.set_xlim(0, 0.6)
     a.set_ylim(-0.02, 1.1)
@@ -236,16 +257,15 @@ def row_simplicial(ax: NDArray, gam: float, i0: float) -> None:
             sim_rhs, [1e-6, 0.9], [0.55, 0.35], taus, p, lambda y: y[0]
         )
         _plot_sweeps(a, taus, up, down, colour, label)
-        a.plot(
+        _plot_branch(
+            a,
             endemic_branch(
                 lambda i, t, p=p: sim_beta_eff(i, sim_fast(i, t, p), t, p) - gam,
                 ig,
                 hi=3.0,
             ),
             ig,
-            "--",
-            color=colour,
-            lw=1.1,
+            colour,
         )
     a.set_xlim(0, 0.42)
     a.set_ylim(-0.02, 1.1)
@@ -295,7 +315,7 @@ def row_adaptive(ax: NDArray, gam: float, i0: float) -> None:
         )
         _plot_sweeps(a, taus, up, down, colour, label)
         # Closed form here, so no root-finding: Eq. (91) gives tau(i*) directly.
-        a.plot(ad_branch(ig, p), ig, "--", color=colour, lw=1.1)
+        _plot_branch(a, ad_branch(ig, p), ig, colour)
     a.set_xlim(0.08, 0.95)
     a.set_ylim(-0.02, 1.1)
     a.legend(frameon=False, loc="upper left")
@@ -334,16 +354,15 @@ def row_interacting(ax: NDArray, gam: float, i0: float) -> None:
             ic_rhs, [1e-6, 0.0], [0.4, 0.4], taus, p, lambda y: y[0] + y[1]
         )
         _plot_sweeps(a, taus, up, down, colour, label)
-        a.plot(
+        _plot_branch(
+            a,
             endemic_branch(
                 lambda i, t, p=p: ic_beta_eff(i, ic_fast(i, t, p), t, p) - gam,
                 ig,
                 lo=0.05,
             ),
             ig,
-            "--",
-            color=colour,
-            lw=1.1,
+            colour,
         )
     a.set_xlim(0.55, 1.45)
     a.set_ylim(-0.02, 1.1)

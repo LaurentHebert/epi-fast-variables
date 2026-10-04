@@ -7,6 +7,7 @@ dependencies = [
     "numpy>=1.26",
     "scipy>=1.11",
     "matplotlib>=3.8",
+    "networkx>=3.2",
 ]
 
 # No [build-system]: this is a set of scripts, not a package.  `uv sync` installs the
