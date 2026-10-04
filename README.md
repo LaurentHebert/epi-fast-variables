@@ -17,7 +17,7 @@ uv run figure1.py     # figure1.pdf, figure1.png -- beta_eff at threshold
 uv run figure2.py     # figure2.pdf, figure2.png -- 4x3 reduction of four models
 uv run figure3.py     # figure3.pdf, figure3.png -- reduction fitted from trajectories
 uv run figure4.py     # figure4.pdf, figure4.png -- pairwise SIR, 2D reduction
-uv run figure5.py     # figure5.pdf, figure5.png -- reduction fitten from simulations
+uv run figure5.py     # figure5.pdf, figure5.png -- reduction fitted from simulations
 ```
 
 Alternatively, run with your own environment simply with
