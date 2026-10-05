@@ -43,7 +43,7 @@ One long-format CSV, one row per run per recording time t = 0, dt, 2 dt, ..., tm
   network, run, t, I, SI, T2, i, si, si_over_i
 
   I, SI, T2   raw counts (infected nodes, S-I edges, two-infected triangles)
-  i, si       I/N, SI/N      (prevalence <I> and pair density <SI>)
+  i, si       I/N, SI/N      (prevalence <I>; the model's <SI> = si / k)
   si_over_i   SI / I         (empty when I = 0); the model's fast variable is
                              p = SI / (k I), k = n + 2 n_tri the total degree
 

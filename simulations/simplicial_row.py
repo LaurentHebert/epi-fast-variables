@@ -2,8 +2,8 @@
 
 Reads the CSV written by ``simplicial_nrm.py`` (simplicial SIS on a regular simplicial
 complex) and draws (a) prevalence i(t), (b) the fast variable p(t) and (c) p against i.
-The fast variable is p = <SI>/<I> in the model's normalisation, p = SI / (k I) with k
-the total pairwise degree.
+The fast variable is p = <SI>/<I> with the per-stub density <SI> = SI/(kN), i.e.
+p = SI / (k I), k the total pairwise degree.
 
 Edges of triangles are also pairwise edges (inclusion property), so a node with n edges
 outside triangles and n_tri triangles has k = n + 2 n_tri pairwise neighbours; the

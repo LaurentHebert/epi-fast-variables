@@ -32,8 +32,10 @@ One long-format CSV, one row per run per recording time t = 0, dt, 2 dt, ..., tm
   si_over_i        SI / I   (empty when I = 0)
   ii_over_i        II / I   (empty when I = 0)
 
-In the model's normalisation the two fast variables are
+The model's <SI> and <II> are per-stub densities, <SI> = SI / (n N) and
+<II> = 2 II / (n N), so the fast variables are
   p1 = <SI>/<I> = SI / (n I)      and      p2 = <II>/<I> = 2 II / (n I).
+The columns si and ii below are plain per-node densities, SI / N and II / N.
 State at recording time t is the state just before the first event after t. Extinct
 runs (I = 0, absorbing) are padded with zeros.
 """

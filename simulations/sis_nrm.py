@@ -22,7 +22,7 @@ One long-format CSV (one row per run per integer time t = 0, 1, ..., tmax):
   network, run, t, I, SI, i, si, si_over_i
 
   I, SI       raw counts (infected nodes, S-I edges)
-  i, si       I/N and SI/N       (prevalence <I> and pair density <SI>)
+  i, si       I/N and SI/N       (prevalence <I>; the model's <SI> = si / n)
   si_over_i   SI/I               (mean number of S neighbours per infected node)
 
 State at integer time t is the state of the system just before the first event

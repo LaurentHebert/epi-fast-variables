@@ -5,7 +5,8 @@ graph, (a) prevalence i(t), (b) the fast variable p(t) and (c) p against i.  Eac
 the mean over surviving runs, the analytic 1D reduction and the 1D reduction closed with
 a quadratic fit of p(i).
 
-The fast variable is p = <SI>/<I> in the model's normalisation, p = SI / (n I); means
+The fast variable is p = <SI>/<I> with the per-stub density <SI> = SI/(nN), i.e.
+p = SI / (n I); means
 over runs are ratios of means.  "Survivors" are runs with I > 0 at the last recorded
 time.  As in Figure 3, the initial fast transient is dropped (first time at which
 |dp/dt| < KAPPA |di/dt| on a short window of the mean curves), the rest is resampled

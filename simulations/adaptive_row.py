@@ -1,11 +1,10 @@
 """Figure 5, adaptive-network SIS row: simulations against the 1D reduction and its fit.
 
 Reads the CSV written by ``adaptive_nrm.py`` (Gross et al. rewiring SIS, Poisson
-graphs)
-and draws (a) prevalence i(t), (b) the fast variables p1(t) = <SI>/<I> and
-p2(t) = <II>/<I> in the model's normalisation, p1 = SI / (n I), p2 = 2 II / (n I), and
-(c) p1 against i.  Means over runs are ratios of means over survivors (I > 0 at the last
-time).
+graphs) and draws (a) prevalence i(t), (b) the fast variables p1(t) = <SI>/<I> and
+p2(t) = <II>/<I>, with the per-stub densities <SI> = SI/(nN), <II> = 2 II/(nN), i.e.
+p1 = SI / (n I), p2 = 2 II / (n I), and (c) p1 against i.  Means over runs are ratios
+of means over survivors (I > 0 at the last time).
 
 Rewiring breaks <SI> + <II> = <I>, so the reduction carries two fast variables; only p1
 enters beta_eff.  The manifold p1(i) is measured from the individual runs pooled into
